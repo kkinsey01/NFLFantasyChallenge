@@ -20,3 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.in-bg {
+    background: aliceblue;
+}
