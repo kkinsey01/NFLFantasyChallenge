@@ -33,6 +33,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="Logout">Logout</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="EditScores">Edit Scores</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>

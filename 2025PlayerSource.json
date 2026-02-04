@@ -1,0 +1,350 @@
+{
+  "DEN": [
+    {
+      "Name": "RJ Harvey",
+      "Position": "RB"
+    },
+    {
+      "Name": "Bo Nix",
+      "Position": "QB"
+    },
+    {
+      "Name": "Cortland Sutton",
+      "Position": "WR"
+    },
+    {
+      "Name": "Will Lutz",
+      "Position": "K"
+    },
+    {
+      "Name": "Evan Engram",
+      "Position": "TE"
+    },
+    {
+      "Name": "RJ Harvey",
+      "Position": "RB"
+    }
+  ],
+  "NE": [
+    {
+      "Name": "Hunter Henry",
+      "Position": "TE"
+    },
+    {
+      "Name": "Drake Maye",
+      "Position": "QB"
+    },
+    {
+      "Name": "Stefon Diggs",
+      "Position": "WR"
+    },
+    {
+      "Name": "Rhamondre Stevenson",
+      "Position": "RB"
+    },
+    {
+      "Name": "TreVeyon Henderson",
+      "Position": "RB"
+    }
+  ],
+  "JAX": [
+    {
+      "Name": "Travis Etienne Jr",
+      "Position": "RB"
+    },
+    {
+      "Name": "Brenton Strange",
+      "Position": "TE"
+    },
+    {
+      "Name": "Trevor Lawrence",
+      "Position": "QB"
+    },
+    {
+      "Name": "Jakobi Meyers",
+      "Position": "WR"
+    },
+    {
+      "Name": "Parker Washington",
+      "Position": "WR"
+    },
+    {
+      "Name": "Cam Little",
+      "Position": "K"
+    },
+    {
+      "Name": "Brian Thomas Jr",
+      "Position": "WR"
+    }
+  ],
+  "PIT": [
+    {
+      "Name": "Chris Boswell",
+      "Position": "K"
+    },
+    {
+      "Name": "DK Metcalf",
+      "Position": "WR"
+    },
+    {
+      "Name": "Steelers",
+      "Position": "D"
+    },
+    {
+      "Name": "Kenneth Gainwell",
+      "Position": "RB"
+    },
+    {
+      "Name": "Jaylen Warren",
+      "Position": "RB"
+    },
+    {
+      "Name": "Aaron Rodgers",
+      "Position": "QB"
+    },
+    {
+      "Name": "Pat Freiermuth",
+      "Position": "TE"
+    }
+  ],
+  "HOU": [
+    {
+      "Name": "Nico Collins",
+      "Position": "WR"
+    },
+    {
+      "Name": "Houston",
+      "Position": "D"
+    },
+    {
+      "Name": "Woody Marks",
+      "Position": "RB"
+    },
+    {
+      "Name": "Kaimi Fairbarin",
+      "Position": "K"
+    },
+    {
+      "Name": "Dalton Shultz",
+      "Position": "TE"
+    }
+  ],
+  "BUF": [
+    {
+      "Name": "James Cook",
+      "Position": "RB"
+    },
+    {
+      "Name": "Josh Allen",
+      "Position": "QB"
+    },
+    {
+      "Name": "Matt Prater",
+      "Position": "K"
+    }
+  ],
+  "LAC": [
+    {
+      "Name": "Ladd McConkey",
+      "Position": "WR"
+    },
+    {
+      "Name": "Quentin Johnston",
+      "Position": "WR"
+    },
+    {
+      "Name": "Justin Herbert",
+      "Position": "QB"
+    },
+    {
+      "Name": "Omarin Hampton",
+      "Position": "RB"
+    },
+    {
+      "Name": "Oronde Gadsen II",
+      "Position": "TE"
+    },
+    {
+      "Name": "Cameron Dicker",
+      "Position": "K"
+    },
+    {
+      "Name": "Keenan Allen",
+      "Position": "WR"
+    }
+  ],
+  "SEA": [
+    {
+      "Name": "Jaxon Smith-Njiba",
+      "Position": "WR"
+    },
+    {
+      "Name": "Kenneth Walker II",
+      "Position": "RB"
+    },
+    {
+      "Name": "Sam Darnold",
+      "Position": "QB"
+    },
+    {
+      "Name": "Seahawks",
+      "Position": "D"
+    },
+    {
+      "Name": "AJ Barner",
+      "Position": "TE"
+    }
+  ],
+  "CHI": [
+    {
+      "Name": "Lurther Burden III",
+      "Position": "WR"
+    },
+    {
+      "Name": "Colston Loveland",
+      "Position": "TE"
+    },
+    {
+      "Name": "Rome Odunze",
+      "Position": "WR"
+    },
+    {
+      "Name": "DJ Moore",
+      "Position": "WR"
+    },
+    {
+      "Name": "Bears",
+      "Position": "D"
+    },
+    {
+      "Name": "Caleb Williams",
+      "Position": "QB"
+    },
+    {
+      "Name": "D'Andre Swift",
+      "Position": "RB"
+    },
+    {
+      "Name": "Cairo Santos",
+      "Position": "K"
+    }
+  ],
+  "PHI": [
+    {
+      "Name": "Saquon Barkley",
+      "Position": "RB"
+    },
+    {
+      "Name": "Devonta Smith",
+      "Position": "WR"
+    },
+    {
+      "Name": "AJ Brown",
+      "Position": "WR"
+    },
+    {
+      "Name": "Jalen Hurts",
+      "Position": "QB"
+    },
+    {
+      "Name": "Dallas Goedert",
+      "Position": "TE"
+    },
+    {
+      "Name": "Jake Elliot",
+      "Position": "K"
+    }
+  ],
+  "CAR": [
+    {
+      "Name": "Rico Dowdle",
+      "Position": "RB"
+    },
+    {
+      "Name": "Tommy Tremble",
+      "Position": "TE"
+    },
+    {
+      "Name": "Panthers",
+      "Position": "D"
+    },
+    {
+      "Name": "Ryan Fitzgerald",
+      "Position": "K"
+    },
+    {
+      "Name": "Bryce Young",
+      "Position": "QB"
+    },
+    {
+      "Name": "Tetairoa McMillian",
+      "Position": "WR"
+    },
+    {
+      "Name": "Jalen Coker",
+      "Position": "WR"
+    }
+  ],
+  "LAR": [
+    {
+      "Name": "Matthew Stafford",
+      "Position": "QB"
+    },
+    {
+      "Name": "Puka Nucua",
+      "Position": "WR"
+    },
+    {
+      "Name": "Kyren Williams",
+      "Position": "RB"
+    }
+  ],
+  "SF": [
+    {
+      "Name": "Christian McCaffery",
+      "Position": "RB"
+    },
+    {
+      "Name": "Jauan Jennings",
+      "Position": "WR"
+    },
+    {
+      "Name": "George Kittle",
+      "Position": "TE"
+    },
+    {
+      "Name": "Eddy Pineiro",
+      "Position": "K"
+    }
+  ],
+  "GB": [
+    {
+      "Name": "Josh Jacobs",
+      "Position": "RB"
+    },
+    {
+      "Name": "Jordan Love",
+      "Position": "QB"
+    },
+    {
+      "Name": "Christian Watson",
+      "Position": "WR"
+    },
+    {
+      "Name": "Brandon McManus",
+      "Position": "K"
+    },
+    {
+      "Name": "Packers",
+      "Position": "D"
+    },
+    {
+      "Name": "Luke Musgrave",
+      "Position": "TE"
+    },
+    {
+      "Name": "Remeo Doubs",
+      "Position": "WR"
+    }
+  ]
+}

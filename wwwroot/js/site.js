@@ -9,3 +9,9 @@ function showError(defaultMsg, xhr) {
         ?? defaultMsg
     );
 }
+
+function formatUrlParams(params) {
+    const qs = new URLSearchParams(params);
+    const str = qs.toString();
+    return str ? `?${str}` : '';
+}

@@ -16,8 +16,15 @@ namespace NFLFantasyChallenge
             // Add services to the container.
             builder.Services.AddRazorPages();
 
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                });
+
             builder.Services.AddScoped<FantasyDbContext>();
-            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();            
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -27,6 +34,11 @@ namespace NFLFantasyChallenge
                     options.AccessDeniedPath = "/Error";
                     options.ExpireTimeSpan = TimeSpan.FromDays(3);
                     options.SlidingExpiration = true;
+
+                    options.Cookie.Name = "NFLFantasyChallenge.Auth";
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.SameSite = SameSiteMode.Lax;
                 });
 
             builder.Services.AddAuthorization();
