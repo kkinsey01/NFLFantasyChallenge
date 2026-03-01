@@ -4,7 +4,7 @@
 // Write your JavaScript code.
 function showError(defaultMsg, xhr) {
     toastr.error(
-        xhr?.responseJSON?.message
+        xhr?.responseJSON?.detail
         ?? xhr?.responseText
         ?? defaultMsg
     );

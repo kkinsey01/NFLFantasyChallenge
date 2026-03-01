@@ -43,5 +43,10 @@ namespace NFLFantasyChallenge.Controllers
 
             return RedirectToAction("Login", "Home");
         }
+
+        public IActionResult LineupManagement()
+        {
+            return View();
+        }
     }
 }

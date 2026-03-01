@@ -24,7 +24,8 @@ namespace NFLFantasyChallenge
 
             builder.Services.AddScoped<FantasyDbContext>();
             builder.Services.AddScoped<IAdminService, AdminService>();
-            builder.Services.AddScoped<IAuthService, AuthService>();            
+            builder.Services.AddScoped<IAuthService, AuthService>();        
+            builder.Services.AddScoped<ILineupControlService, LineupControlService>();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

@@ -43,5 +43,21 @@ public static class DbSeeder
             }
             db.SaveChanges();
         }        
+
+        if (!db.ChallengeRules.Any())
+        {
+            var challengeRules = new List<ChallengeRule>()
+            {
+                new ChallengeRule() { Name = "QbCount", Description = "2" },
+                new ChallengeRule() { Name = "RbCount", Description = "5" },
+                new ChallengeRule() { Name = "WrCount", Description = "5" },
+                new ChallengeRule() { Name = "TeCount", Description = "2" },
+                new ChallengeRule() { Name = "KCount", Description = "1" },
+                new ChallengeRule() { Name = "DCount", Description = "1" }
+            };
+
+            db.ChallengeRules.AddRange(challengeRules);
+            db.SaveChanges();
+        }
     }
 }

@@ -95,6 +95,7 @@ function fillPlayerList(positionGroup) {
     let playerEntryTemplate = $('#PlayerEntryTemplate').clone(false).contents();    
 
     let container = $('#PlayerBody');
+    container.empty();
     positionGroup.forEach(position => {
         const wrapper = $('<div></div>');
 
