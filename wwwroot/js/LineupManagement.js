@@ -58,7 +58,7 @@ function fillLineup() {
 
     positionGroups.forEach(position => {
         const wrapper = $('<div></div>');
-        
+
         let newPosition = positionTemplate.clone(false);
         newPosition.find('.player-position').text(position.PositionName);
 
@@ -101,12 +101,12 @@ function fillLineup() {
             }
 
             // filled out player, but still modifiable at this point
-            newRow.find('.player-name').val(playerName);                    
+            newRow.find('.player-name').val(playerName);
             newRow.find('.player-team').text(player.Team);
             newRow.find('.add-player-btn').addClass('d-none');
             newRow.find('.remove-player-btn').on('click', function (data) {
                 removePlayerFromLineup(player.PlayerId);
-            });                       
+            });
             playerContainer.append(newRow);
         })
 
@@ -115,7 +115,13 @@ function fillLineup() {
         wrapper.append($('<hr />'));
 
         container.append(wrapper);
-    })
+    });
+
+    if (isLineupLocked) {
+        $('#LockLineup').hide();
+    } else {
+        $('#LockLineup').show();
+    }
 }
 
 function getPlayerList(position) {

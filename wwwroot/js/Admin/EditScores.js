@@ -19,6 +19,20 @@
         setScoresToZero();
     })
 
+    $('#EditPlayerTeamSelector').on('change', function (e) {
+        e.preventDefault();
+
+        clearInputArea();                
+        getPlayerList();
+    })
+
+    $('#EditPlayerWeekSelector').on('change', function (e) {
+        e.preventDefault();
+
+        clearInputArea();
+        getPlayerList();
+    })
+
     $('#BottomControls').hide();
 });
 
@@ -78,8 +92,7 @@ function getPlayerList() {
         method: 'GET',
         url: urll,
         success: function (data) {
-            fillPlayerList(data);
-            $('#BottomControls').show();
+            fillPlayerList(data);            
         },
         error: function (data) {
             showError("Error getting player list", data);
@@ -124,6 +137,8 @@ function fillPlayerList(positionGroup) {
 
         container.append(wrapper);
     });
+
+    $('#BottomControls').show();
 }
 
 function updatePlayerScores() {
@@ -169,3 +184,8 @@ function setScoresToZero() {
 
     toastr.warning("Scores have been set to 0. Click 'Save Changes' to apply change.");
 }
+
+function clearInputArea() {
+    $('#PlayerBody').empty();
+    $('#BottomControls').hide();
+}  

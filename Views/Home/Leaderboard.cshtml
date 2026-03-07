@@ -1,0 +1,51 @@
+﻿@section Scripts {
+    <script src="~/js/Leaderboard.js"></script>
+}
+
+<style>
+    .gold-background {
+        background-color: #C9A227;
+        color: white;
+        font-weight: 600;
+    }
+
+    .silver-background {
+        background-color: #B0B7C3;
+        color: #1f1f1f;
+        font-weight: 600;
+    }
+
+    .bronze-background {
+        background-color: #A97142;
+        color: white;
+        font-weight: 600;
+    }
+</style>
+
+<div>
+    <h5>Leaderboard</h5>
+
+    <div class="mt-4">
+        <div class="shadow shadow-lg table-responsive">
+            <table id="LeaderboardTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody id="LeaderboardTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<template id="LeaderboardRowTemplate">
+    <tr style="border-radius: 6px; padding: 6px 10px;">
+        <td class="rank"></td>
+        <td class="user-full-name" style="text-overflow: ellipsis;"></td>
+        <td class="total-score"></td>
+    </tr>
+</template>

@@ -13,10 +13,12 @@ namespace NFLFantasyChallenge.API.Controllers
     public class WebController : ControllerBase
     {
         private readonly ILineupControlService _lineupControlService;
+        private readonly ILeaderboardService _leaderboardService;
 
-        public WebController(ILineupControlService lineupControlService)
+        public WebController(ILineupControlService lineupControlService, ILeaderboardService leaderboardService)
         {
             _lineupControlService = lineupControlService;
+            _leaderboardService = leaderboardService;   
         }
 
         [Authorize]
@@ -91,6 +93,14 @@ namespace NFLFantasyChallenge.API.Controllers
         {
             var scores = await _lineupControlService.GetIndividualScores(PlayerId);
             return Ok(scores);
+        }
+
+        [Authorize]
+        [HttpGet("GetLeaderboard")]
+        public async Task<IActionResult> GetLeaderboard()
+        {
+            var leaderboard = await _leaderboardService.GetLeaderboard();
+            return Ok(leaderboard);
         }
     }
 }
