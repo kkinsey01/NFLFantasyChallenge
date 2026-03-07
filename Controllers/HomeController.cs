@@ -44,11 +44,13 @@ namespace NFLFantasyChallenge.Controllers
             return RedirectToAction("Login", "Home");
         }
 
+        [Authorize]
         public IActionResult LineupManagement()
         {
             return View();
         }
 
+        [Authorize]
         public IActionResult Leaderboard()
         {
             return View();

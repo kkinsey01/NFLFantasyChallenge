@@ -1,0 +1,63 @@
+﻿@section Scripts {
+    <script src="~/js/Admin/Users.js"></script>
+}
+
+<div>
+    <h5>Users</h5>
+
+    <div>
+        <div class="table-responsive shadow shadow-lg">
+            <table id="UsersTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Full Name</th>
+                        <th>Phone Number</th>
+                        <th style="width: 100px;">Balance</th>
+                        <th style="width: 155px;">Role Name</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="UsersTableBody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<template id="UserRowTemplate">
+    <tr>
+        <td class="">
+            <input class="form-control in-bg user-name" type="text" placeholder="Username"/>
+        </td>
+        <td class="">
+            <input class="form-control in-bg user-password" type="password"/>
+        </td>
+        <td class="">
+            <input class="form-control in-bg user-full-name" type="text" placeholder="Full Name"/>
+        </td>
+        <td class="">
+            <input class="form-control in-bg phone-number" type="text" placeholder="Phone Number"/>
+        </td>
+        <td class="user-balance">
+            <input class="form-control in-bg user-balance" type="number"/>
+        </td>
+        <td>
+            <select class="form-select in-bg user-role">
+
+            </select>
+        </td>
+        <td>
+            <div class="d-flex">
+                <button class="btn btn-success update-user">Update</button>
+                <button class="btn btn-danger remove-user ms-2">Remove</button>
+            </div>            
+        </td>
+    </tr>
+</template>
+
+<div id="OptionTemplate" style="display:none;">
+    <option class="px-2 in-bg"></option>
+</div>

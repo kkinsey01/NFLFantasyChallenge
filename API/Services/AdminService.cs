@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NFLFantasyChallenge.API.DTOs.Admin.EditScores;
+using NFLFantasyChallenge.API.DTOs.Admin.ManageUsers;
+using NFLFantasyChallenge.API.DTOs.Auth;
 using NFLFantasyChallenge.API.Enums;
 using NFLFantasyChallenge.API.Services.Interfaces;
 using NFLFantasyChallenge.Middleware;
@@ -132,6 +134,109 @@ public class AdminService : IAdminService
                 dbPlayer.SuperBowlScore = player.NewScore;
             }
         }
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<RoleDTO>> GetRoles()
+    {
+        return await _context.Roles
+            .Select(s => new RoleDTO()
+            {
+                RoleID = s.RoleId,
+                RoleName = s.RoleName
+            })
+            .ToListAsync();
+    }
+
+    public async Task<List<UserDTO>> GetUsers()
+    {
+        return await _context.Users
+            .Select(s => new UserDTO()
+            {
+                UserID = s.UserId,
+                UserName = s.Username,
+                Password = "",
+                FullName = s.FullName,
+                PhoneNumber = s.PhoneNumber ?? "",
+                Balance = s.Balance,
+                RoleID = s.RoleId,
+                RoleName = s.Role.RoleName,
+            })
+            .OrderBy(o => o.FullName)
+            .ToListAsync();
+    }
+
+    public async Task UpdateUser(UserDTO user)
+    {
+        var dbUser = await _context.Users
+            .Include(i => i.Role)
+            .Where(w => w.UserId == user.UserID)
+            .FirstOrDefaultAsync();
+
+        if (dbUser == null)
+        {
+            throw new FantasyAPIException("Invalid User");
+        }
+
+        if (dbUser.Username != user.UserName)
+        {
+            if (await _context.Users.AnyAsync(a => a.Username == user.UserName))
+            {
+                throw new FantasyAPIException("Username already taken");
+            }
+            dbUser.Username = user.UserName;
+        }
+
+        if (!string.IsNullOrEmpty(user.Password))
+        {
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            dbUser.Password = hashedPassword;
+        }
+
+        if (dbUser.FullName != user.FullName)
+        {
+            dbUser.FullName = user.FullName;
+        }
+
+        if (dbUser.PhoneNumber != user.PhoneNumber)
+        {
+            dbUser.PhoneNumber = user.PhoneNumber;
+        }
+
+        if (dbUser.Balance != user.Balance)
+        {
+            dbUser.Balance = user.Balance;
+        }
+
+        if (dbUser.RoleId != user.RoleID)
+        {
+            dbUser.RoleId = user.RoleID;
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteUser(int userId)
+    {
+        var dbUser = await _context.Users.FindAsync(userId);
+
+        if (dbUser == null)
+        {
+            throw new FantasyAPIException("Invalid User");
+        }
+
+        var userLineups = await _context.Lineups.Where(w => w.UserId == userId).ToListAsync();
+
+        if (userLineups.Count != 0)
+        {
+            foreach (var lineup in userLineups)
+            {
+                _context.Lineups.Remove(lineup);
+            }
+        }
+
+        _context.Users.Remove(dbUser);
 
         await _context.SaveChangesAsync();
     }

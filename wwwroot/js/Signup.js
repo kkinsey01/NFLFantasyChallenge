@@ -27,7 +27,7 @@ function submit() {
         Username: $('#SignupUsername').val(),
         Password: $('#SignupPassword').val(),
         ConfirmPassword: $('#SignupConfirmPassword').val(),
-        PhoneNumber: $('SignupPhoneNumber').val()
+        PhoneNumber: $('#SignupPhoneNumber').val()
     };
 
     var urll = '/api/auth/signup';

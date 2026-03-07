@@ -13,7 +13,8 @@ public static class DbSeeder
             var roles = new List<Role>()
             {
                 new Role() {RoleName = "Player"},
-                new Role() {RoleName = "Admin"}
+                new Role() {RoleName = "Admin"},
+                new Role() {RoleName = "DevAdmin"}
             };
 
             db.Roles.AddRange(roles);

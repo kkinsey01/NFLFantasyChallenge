@@ -1,4 +1,5 @@
 ﻿using NFLFantasyChallenge.API.DTOs.Admin.EditScores;
+using NFLFantasyChallenge.API.DTOs.Admin.ManageUsers;
 
 namespace NFLFantasyChallenge.API.Services.Interfaces;
 
@@ -9,4 +10,8 @@ public interface IAdminService
     public Task<List<EditScoresPlayersByPositionDTO>> GetEditScoresPlayerInfo(string Team, string Week);
 
     public Task EditPlayerScores(AllEditScoresPlayersDTO allPlayers);
+    public Task<List<RoleDTO>> GetRoles();
+    public Task<List<UserDTO>> GetUsers();
+    public Task UpdateUser(UserDTO user);
+    public Task DeleteUser(int userId);
 }

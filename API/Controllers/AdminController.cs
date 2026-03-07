@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NFLFantasyChallenge.API.DTOs.Admin.EditScores;
+using NFLFantasyChallenge.API.DTOs.Admin.ManageUsers;
 using NFLFantasyChallenge.API.Services.Interfaces;
 
 namespace NFLFantasyChallenge.API.Controllers
@@ -38,6 +39,34 @@ namespace NFLFantasyChallenge.API.Controllers
         public async Task<IActionResult> EditPlayersScores(AllEditScoresPlayersDTO allPlayers)
         {
             await _adminService.EditPlayerScores(allPlayers);
+            return Ok();
+        }
+
+        [HttpGet("GetRoles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            var roles = await _adminService.GetRoles();
+            return Ok(roles);
+        }
+
+        [HttpGet("GetUsers")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _adminService.GetUsers();
+            return Ok(users);
+        }
+
+        [HttpPost("UpdateUser")]
+        public async Task<IActionResult> UpdateUser(UserDTO user)
+        {
+            await _adminService.UpdateUser(user);
+            return Ok();
+        }
+
+        [HttpPost("DeleteUser")]
+        public async Task<IActionResult> DeleteUser([FromBody] int userId)
+        {
+            await _adminService.DeleteUser(userId);
             return Ok();
         }
     }
