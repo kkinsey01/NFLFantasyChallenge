@@ -5,8 +5,14 @@
         e.preventDefault();
 
         getBalances();
+    });
+
+    $('#NameSearch').on('input', function (e) {       
+        searchBalanceNames();
     })
 })
+
+let Balances = [];
 
 function getBalances() {
     let urll = '/api/admin/GetUserBalances';
@@ -15,6 +21,7 @@ function getBalances() {
         method: 'GET',
         url: urll,
         success: function (data) {
+            Balances = data;
             fillUserBalances(data);
         },
         error: function (data) {
@@ -66,4 +73,11 @@ function updateBalance(userId) {
             showError("Error updating balance", data);
         }
     })
+}
+
+function searchBalanceNames() {
+    let searchText = $('#NameSearch').val()?.toLowerCase().trim() || '';
+    let filteredBalances = Balances.filter(f => f.Name.toLowerCase().includes(searchText));
+
+    fillUserBalances(filteredBalances);
 }

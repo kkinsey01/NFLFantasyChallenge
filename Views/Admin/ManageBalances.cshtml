@@ -3,14 +3,21 @@
 }
 
 
+
 <div class="mx-auto">
-    <div class="d-flex gap-3">
+    <div class="d-flex gap-3 align-items-center">
         <h5>Manage Balances</h5>
         <button id="RefreshTableBtn" class="btn btn-warning">Refresh</button>
 
         <!--Add a way to filter to only show users with a balance. Also add a search (by name), probably best to do this just in the JS list-->
     </div>    
-    <div class="mt-2">
+    <div class="mt-2 d-flex mx-2">
+        <div>
+            <span class="ms-2 fw-bold">Search Names</span>
+            <input id="NameSearch" class="form-control in-bg" placeholder="Search by name.." type="search" style="width: 200px;"/>
+        </div>       
+    </div>
+    <div class="mt-4">
         <div>
             <table id="ManageBalanceTable" class="table table-striped" style="overflow-y: auto; max-height: 300px;">
                 <thead>
