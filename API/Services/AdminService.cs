@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NFLFantasyChallenge.API.DTOs.Admin;
 using NFLFantasyChallenge.API.DTOs.Admin.EditScores;
 using NFLFantasyChallenge.API.DTOs.Admin.ManageUsers;
 using NFLFantasyChallenge.API.DTOs.Auth;
@@ -239,5 +240,38 @@ public class AdminService : IAdminService
         _context.Users.Remove(dbUser);
 
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<ManageBalanceDTO>> GetUserBalances()
+    {
+        var result = await _context.Users
+            .Select(s => new ManageBalanceDTO()
+            {
+                UserId = s.UserId,
+                Name = s.FullName,
+                Amount = s.Balance,
+            })
+            .OrderByDescending(o => o.Amount)
+            .ThenBy(t => t.Name)
+            .ToListAsync();
+
+        return result;
+    }
+
+    public async Task UpdateUserBalance(ManageBalanceDTO manageBalanceDTO)
+    {
+        var user = await _context.Users.Where(w => w.UserId == manageBalanceDTO.UserId).FirstOrDefaultAsync();
+
+        if (user == null)
+        {
+            throw new FantasyAPIException("Invalid User");
+        }
+
+        if (user.Balance != manageBalanceDTO.Amount)
+        {
+            user.Balance = manageBalanceDTO.Amount;
+
+            await _context.SaveChangesAsync();
+        }        
     }
 }

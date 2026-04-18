@@ -16,5 +16,11 @@ namespace NFLFantasyChallenge.Controllers
         {
             return View();
         }
+
+        [Authorize(Roles = "Admin,DevAdmin")]
+        public IActionResult ManageBalances()
+        {
+            return View();
+        }
     }
 }

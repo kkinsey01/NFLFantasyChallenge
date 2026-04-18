@@ -1,0 +1,41 @@
+﻿@section Scripts {
+    <script src="~/js/Admin/ManageBalances.js"></script>
+}
+
+
+<div class="mx-auto">
+    <div class="d-flex gap-3">
+        <h5>Manage Balances</h5>
+        <button id="RefreshTableBtn" class="btn btn-warning">Refresh</button>
+
+        <!--Add a way to filter to only show users with a balance. Also add a search (by name), probably best to do this just in the JS list-->
+    </div>    
+    <div class="mt-2">
+        <div>
+            <table id="ManageBalanceTable" class="table table-striped" style="overflow-y: auto; max-height: 300px;">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Balance</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="ManageBalanceTableBody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<template id="ManageBalanceRowTemplate">
+    <tr>
+        <td class="balance-name"></td>
+        <td>
+            <input type="number" class="form-control in-bg form-control-sm balance-amount" style="width: 80px;"/>
+        </td>
+        <td>
+            <button class="btn btn-success btn-sm update-balance-btn">Update</button>
+        </td>
+    </tr>
+</template>

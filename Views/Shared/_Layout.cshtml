@@ -53,7 +53,7 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" asp-controller="Admin" asp-action="EditScores">Edit Scores</a></li>
-
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="ManageBalances">Manage Balances</a></li>
                                     @if (User.Claims.Any(a => a.Value == "DevAdmin"))
                                     {
                                         <li><a class="dropdown-item" asp-controller="Admin" asp-action="Users">Users</a></li>
