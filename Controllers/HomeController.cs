@@ -45,7 +45,7 @@ namespace NFLFantasyChallenge.Controllers
         }
 
         [Authorize]
-        public IActionResult LineupManagement()
+        public IActionResult LineupViewer()
         {
             return View();
         }

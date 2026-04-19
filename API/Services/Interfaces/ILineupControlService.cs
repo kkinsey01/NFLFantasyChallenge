@@ -5,10 +5,11 @@ namespace NFLFantasyChallenge.API.Services.Interfaces;
 
 public interface ILineupControlService
 {
-    public Task<UserLineupDTO> GetUserLineup(int userId);
+    public Task<LineupViewerDTO> GetUserLineupInfoList(int userId);
+    public Task<UserLineupDTO> GetUserLineup(int filteredUserId, int requestedByUserId);
     public Task<List<PlayerDTO>> GetPlayerList(int userId, string Position);
     public Task AddPlayerToLineup(int userId, int PlayerId);
     public Task RemovePlayerFromLineup(int userId, int PlayerId);
     public Task LockLineup(int userId);
-    public Task<PlayerScoresDTO> GetIndividualScores(int playerId);
+    public Task<PlayerScoresDTO> GetIndividualScores(int playerId);   
 }

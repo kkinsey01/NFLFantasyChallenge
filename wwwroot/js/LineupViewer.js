@@ -1,5 +1,11 @@
 ﻿$(function () {    
-    getUserLineup();
+    getLineupViewer();    
+
+    $('#UserLineupViewSelect').on('change', function (e) {
+        e.preventDefault();
+
+        getUserLineup();
+    })
 
     $('#SearchPlayerNames').on('input', function (e) {
         e.preventDefault();
@@ -28,10 +34,50 @@
 
 let positionGroups = [];
 let isLineupLocked = false;
+let canEditLineup = false;
 let playerAddList = [];
 
+function getLineupViewer() {
+    var urll = '/api/web/GetUserLineupInfo';
+
+    $.ajax({
+        method: 'GET',
+        url: urll,
+        success: function (data) {
+            fillLineupViewSelect(data.UserLineupInfoList, data.DefaultUserId);
+        },
+        error: function (data) {
+            showError("Error user list", data);
+        }
+    })
+}
+
+function fillLineupViewSelect(users, defaultUserId) {
+    let optionTemplate = $('#OptionTemplate').contents();
+    let lineupViewSelect = $('#UserLineupViewSelect');
+
+    lineupViewSelect.empty();
+
+    users.forEach(user => {
+        let newOption = optionTemplate.clone(false);
+
+        newOption.val(user.UserId);
+        newOption.text(user.Name);
+
+        lineupViewSelect.append(newOption);
+    });
+
+    lineupViewSelect.val(defaultUserId);
+
+    getUserLineup();
+}
+
 function getUserLineup() {
-    var urll = '/api/web/GetUserLineup';    
+    let searchFilters = {
+        FilteredUserId: parseInt($('#UserLineupViewSelect').val())
+    };
+
+    var urll = '/api/web/GetUserLineup' + formatUrlParams(searchFilters);    
 
     $.ajax({
         method: 'GET',
@@ -40,6 +86,7 @@ function getUserLineup() {
             $('#UserFullName').text(data.FullName);
             positionGroups = data.PositionGroups;
             isLineupLocked = data.IsLocked;
+            canEditLineup = data.CanEdit;
             fillLineup();
         },
         error: function (data) {
@@ -70,7 +117,7 @@ function fillLineup() {
             let newRow = playerTemplate.clone(true);
 
             // lineup locked, so info should be static
-            if (isLineupLocked) {
+            if (isLineupLocked || !canEditLineup) {
                 newRow.find('.player-name').val(player.PlayerName);
                 newRow.find('.player-team').text(player.Team);
                 newRow.find('.add-player-btn').addClass('d-none');
@@ -92,7 +139,6 @@ function fillLineup() {
             if (playerName == undefined || playerName == "") {
                 newRow.find('.player-name').val('<Empty Slot>');
                 newRow.find('.remove-player-btn').addClass('d-none');
-
                 newRow.find('.add-player-btn').on('click', function (data) {
                     getPlayerList(position.PositionName);
                 });
@@ -104,9 +150,9 @@ function fillLineup() {
             newRow.find('.player-name').val(playerName);
             newRow.find('.player-team').text(player.Team);
             newRow.find('.add-player-btn').addClass('d-none');
-            newRow.find('.remove-player-btn').on('click', function (data) {
-                removePlayerFromLineup(player.PlayerId);
-            });
+                newRow.find('.remove-player-btn').on('click', function (data) {
+                    removePlayerFromLineup(player.PlayerId);
+                });
             playerContainer.append(newRow);
         })
 
@@ -116,8 +162,8 @@ function fillLineup() {
 
         container.append(wrapper);
     });
-
-    if (isLineupLocked) {
+   
+    if (isLineupLocked || !canEditLineup) {
         $('#LockLineup').hide();
     } else {
         $('#LockLineup').show();

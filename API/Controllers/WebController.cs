@@ -22,8 +22,8 @@ namespace NFLFantasyChallenge.API.Controllers
         }
 
         [Authorize]
-        [HttpGet("GetUserLineup")]
-        public async Task<IActionResult> GetUserLineup()
+        [HttpGet("GetUserLineupInfo")]
+        public async Task<IActionResult> GetUserLineupInfoList()
         {
             var userIdStr = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userIdStr == null || !int.TryParse(userIdStr, out var userId))
@@ -31,7 +31,21 @@ namespace NFLFantasyChallenge.API.Controllers
                 return Problem();
             }
 
-            var lineup = await _lineupControlService.GetUserLineup(userId);
+            var lineupViewer = await _lineupControlService.GetUserLineupInfoList(userId);
+            return Ok(lineupViewer);
+        }
+
+        [Authorize]
+        [HttpGet("GetUserLineup")]
+        public async Task<IActionResult> GetUserLineup(int filteredUserId)
+        {
+            var userIdStr = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdStr == null || !int.TryParse(userIdStr, out var requestedByUserId))
+            {
+                return Problem();
+            }
+
+            var lineup = await _lineupControlService.GetUserLineup(filteredUserId, requestedByUserId);
             return Ok(lineup);
         }
 

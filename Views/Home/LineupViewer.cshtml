@@ -1,16 +1,22 @@
 ﻿@section Scripts {
-    <script src="~/js/LineupManagement.js"></script>
+    <script src="~/js/LineupViewer.js"></script>
 }
 
 <div class="mx-auto">
     <h5>Manage lineup</h5>
 
-    <div class="d-flex">
-        <h5 id="UserFullName"></h5>
-        <button id="LockLineup" class="btn btn-warning ms-4">Lock Lineup</button>
+    <div class="d-flex align-items-end">
+        <div>
+            <span class="fw-bold ms-2 fs-5">Lineup to view</span>
+            <select id="UserLineupViewSelect" class="form-select in-bg p-2" style="width: 200px;">
+
+            </select>
+        </div>
+
+        <button id="LockLineup" class="btn btn-warning ms-4 p-2">Lock Lineup</button>
     </div>    
 
-    <div id="LineupBody">
+    <div id="LineupBody" class="mt-2">
 
     </div>
 </div>

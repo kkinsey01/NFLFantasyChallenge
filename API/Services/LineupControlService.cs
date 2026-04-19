@@ -19,9 +19,49 @@ public class LineupControlService : ILineupControlService
         _context = context;
     }
 
-    public async Task<UserLineupDTO> GetUserLineup(int userId)
+    public async Task<LineupViewerDTO> GetUserLineupInfoList(int userId)
     {
-        var user = await _context.Users.Where(w => w.UserId == userId).FirstOrDefaultAsync();
+        var defaultUser = await _context.Users
+          .Where(w => w.UserId == userId)
+          .Select(s => new UserLineupInfoDTO()
+          {
+              UserId = s.UserId,
+              Name = s.FullName,
+          })
+          .FirstOrDefaultAsync();
+        if (defaultUser == null)
+        {
+            throw new FantasyAPIException("Invalid User");
+        }
+
+        var usersWithLineups = await _context.Lineups
+            .Where(w => w.IsLocked)
+            .Select(s => new UserLineupInfoDTO()
+            {
+                UserId = s.User.UserId,
+                Name = s.User.FullName,
+            })
+            .ToListAsync();      
+
+        var userList = new List<UserLineupInfoDTO>();
+
+        userList.AddRange(usersWithLineups);
+        userList.Add(defaultUser);
+
+        userList = userList.DistinctBy(d => d.UserId).OrderBy(o => o.Name).ToList();
+
+        var lineupViewer = new LineupViewerDTO()
+        {
+            DefaultUserId = defaultUser.UserId, // this will be the one selected in the dropdown automatically
+            UserLineupInfoList = userList
+        };
+
+        return lineupViewer;
+    }
+
+    public async Task<UserLineupDTO> GetUserLineup(int filteredUserId, int requestedByUserId)
+    {
+        var user = await _context.Users.Where(w => w.UserId == filteredUserId).FirstOrDefaultAsync();
         if (user == null)
         {
             throw new FantasyAPIException("Invalid user");
@@ -30,7 +70,7 @@ public class LineupControlService : ILineupControlService
         var positionOrder = new List<string> { "QB", "RB", "WR", "TE", "K", "D" };
 
         var lineup = await _context.Lineups
-            .Where(w => w.UserId == userId)
+            .Where(w => w.UserId == filteredUserId)
             .Select(s => new
             {
                 s.User.FullName,
@@ -53,6 +93,7 @@ public class LineupControlService : ILineupControlService
         {
             FullName = user.FullName,
             IsLocked = false,
+            CanEdit = filteredUserId == requestedByUserId,
             PositionGroups = new List<LineupPlayersByPosition>()
         };
         if (lineup == null)

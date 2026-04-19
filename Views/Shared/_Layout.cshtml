@@ -12,9 +12,12 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-success border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">NFLFantasyChallenge</a>
+                <a class="navbar-brand text-white" asp-area="" asp-page="/Index">
+                    NFL Fantasy Challenge
+                    <img src="~/img/football.png" style="height: 24px; transform: rotate(12deg);"/>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -22,43 +25,47 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link text-white" asp-area="" asp-page="/Index">Home</a>
                         </li>
                         @if (!User.Claims.Any())
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Signup">Signup</a>
+                                <a class="nav-link text-white" asp-controller="Home" asp-action="Signup">Signup</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Login">Login</a>
+                                <a class="nav-link text-white" asp-controller="Home" asp-action="Login">Login</a>
+                            </li>
+                        }
+                        @if (User.Claims.Any())
+                        {                            
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Home" asp-action="Leaderboard">Leaderboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Home" asp-action="LineupViewer">Lineup Viewer</a>
+                            </li>
+
+                        }
+                        @if (User.Claims.Any(w => w.Value == "Admin") || User.Claims.Any(a => a.Value == "DevAdmin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu bg-success" style="border: 1px solid black">
+                                    <li><a class="dropdown-item text-white" asp-controller="Admin" asp-action="EditScores">Edit Scores</a></li>
+                                    <li><a class="dropdown-item text-white" asp-controller="Admin" asp-action="ManageBalances">Manage Balances</a></li>
+                                    @if (User.Claims.Any(a => a.Value == "DevAdmin"))
+                                    {
+                                        <li><a class="dropdown-item text-white" asp-controller="Admin" asp-action="Users">Users</a></li>
+                                    }
+                                </ul>
                             </li>
                         }
                         @if (User.Claims.Any())
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Logout">Logout</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Leaderboard">Leaderboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Home" asp-action="LineupManagement">Manage Lineup</a>
-                            </li>
-                        }
-                        @if (User.Claims.Any(w => w.Value == "Admin") || User.Claims.Any(a => a.Value == "DevAdmin")) 
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    Admin
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="EditScores">Edit Scores</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="ManageBalances">Manage Balances</a></li>
-                                    @if (User.Claims.Any(a => a.Value == "DevAdmin"))
-                                    {
-                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Users">Users</a></li>
-                                    }
-                                </ul>
+                                <a class="nav-link text-white" asp-controller="Home" asp-action="Logout">Logout</a>
                             </li>
                         }
                     </ul>
