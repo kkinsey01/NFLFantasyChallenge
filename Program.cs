@@ -65,7 +65,14 @@ namespace NFLFantasyChallenge
 
             using (var scope = app.Services.CreateScope()) 
             {
-                var db = scope.ServiceProvider.GetRequiredService<FantasyDbContext>();                
+                var db = scope.ServiceProvider.GetRequiredService<FantasyDbContext>();
+                try
+                {
+                    db.Database.Migrate();
+                }
+                catch
+                {
+                }
                 DbSeeder.Seed(db);               
             }
 
