@@ -420,3 +420,6 @@ FodyWeavers.xsd
 *.db
 *.sqlite
 *.sqlite3
+
+/appsettings.Production.json
+/appsettings.Development.json

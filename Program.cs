@@ -21,8 +21,7 @@ namespace NFLFantasyChallenge
                 {
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
                 });
-
-            builder.Services.AddScoped<FantasyDbContext>();
+            
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IAuthService, AuthService>();        
             builder.Services.AddScoped<ILineupControlService, LineupControlService>();
@@ -45,6 +44,10 @@ namespace NFLFantasyChallenge
 
             builder.Services.AddAuthorization();
 
+            builder.Services.AddDbContext<FantasyDbContext>(options =>
+                options.UseNpgsql(
+                    builder.Configuration.GetConnectionString("DefaultConnection")));
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -57,9 +60,8 @@ namespace NFLFantasyChallenge
 
             using (var scope = app.Services.CreateScope()) 
             {
-                var db = scope.ServiceProvider.GetRequiredService<FantasyDbContext>();
-                db.Database.Migrate();
-                DbSeeder.Seed(db);
+                var db = scope.ServiceProvider.GetRequiredService<FantasyDbContext>();                
+                DbSeeder.Seed(db);               
             }
 
             app.UseMiddleware<GlobalExceptionMiddleware>();
