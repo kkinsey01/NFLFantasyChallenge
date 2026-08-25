@@ -17,4 +17,7 @@ public interface IAdminService
     public Task DeleteUser(int userId);
     public Task<List<ManageBalanceDTO>> GetUserBalances();
     public Task UpdateUserBalance(ManageBalanceDTO manageBalanceDTO);
+    public Task<List<PendingRegistrationDTO>> GetPendingRegistrations();
+    public Task ApprovePendingRegistration(int registrationId);
+    public Task DenyPendingRegistration(int registrationId);
 }

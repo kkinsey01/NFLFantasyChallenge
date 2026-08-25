@@ -9,42 +9,47 @@ namespace NFLFantasyChallenge.API.Services;
 public class AuthService : IAuthService
 {
     private readonly FantasyDbContext _context;
+    private readonly IEmailService _emailService;
 
-    public AuthService(FantasyDbContext context)
+    public AuthService(FantasyDbContext context, IEmailService emailService)
     {
         _context = context;
+        _emailService = emailService;
     }
 
     public async Task Signup(SignupDTO signupDTO)
     {
-        if (await _context.Users.AnyAsync(a => a.Username == signupDTO.Username))
+        if (await _context.Users.AnyAsync(a => a.Username == signupDTO.Username)
+            || await _context.PendingRegistrations.AnyAsync(a => a.Username == signupDTO.Username))
         {
             throw new FantasyAPIException("Username already taken");
+        }
+
+        if (await _context.Users.AnyAsync(a => a.Email == signupDTO.Email)
+            || await _context.PendingRegistrations.AnyAsync(a => a.Email == signupDTO.Email))
+        {
+            throw new FantasyAPIException("Email already taken");
         }
 
         if (signupDTO.Password != signupDTO.ConfirmPassword)
         {
             throw new FantasyAPIException("Passwords do not match");
         }
+        var registrationTime = DateTime.Now;
 
-        var role = await _context.Roles.Where(w => w.RoleName == "Player").FirstOrDefaultAsync();
-
-        if (role == null)
-        {
-            throw new FantasyAPIException("An Error Occured Signing Up");
-        }
-
-        var newUser = new User()
+        var newRegistration = new PendingRegistration()
         {
             FullName = signupDTO.FullName,
             Username = signupDTO.Username,
             Password = BCrypt.Net.BCrypt.HashPassword(signupDTO.Password),
-            PhoneNumber = signupDTO.Password,
-            Role = role
+            Email = signupDTO.Email,
+            RegistrationTime = registrationTime.ToUniversalTime()
         };
 
-        _context.Users.Add(newUser);
+        _context.PendingRegistrations.Add(newRegistration);
         await _context.SaveChangesAsync();
+
+        await _emailService.SendNewRegistrationEmail(signupDTO.Username, registrationTime);
     }
 
     public async Task<UserLoginModel> Login(LoginDTO loginDTO)

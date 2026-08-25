@@ -27,7 +27,7 @@ function submit() {
         Username: $('#SignupUsername').val(),
         Password: $('#SignupPassword').val(),
         ConfirmPassword: $('#SignupConfirmPassword').val(),
-        PhoneNumber: $('#SignupPhoneNumber').val()
+        Email: $('#SignupEmail').val()
     };
 
     var urll = '/api/auth/signup';
@@ -51,5 +51,5 @@ function clear() {
     $('#SignupUsername').val("");
     $('#SignupPassword').val("");
     $('#SignupConfirmPassword').val("");
-    $('#SignupPhoneNumber').val("");
+    $('#SignupEmail').val("");
 }

@@ -55,6 +55,7 @@
                                 <ul class="dropdown-menu bg-success" style="border: 1px solid black">
                                     <li><a class="dropdown-item text-white" asp-controller="Admin" asp-action="EditScores">Edit Scores</a></li>
                                     <li><a class="dropdown-item text-white" asp-controller="Admin" asp-action="ManageBalances">Manage Balances</a></li>
+                                    <li><a class="dropdown-item text-white" asp-controller="Admin" asp-action="PendingRegistrations">Pending Registrations</a></li>
                                     @if (User.Claims.Any(a => a.Value == "DevAdmin"))
                                     {
                                         <li><a class="dropdown-item text-white" asp-controller="Admin" asp-action="Users">Users</a></li>

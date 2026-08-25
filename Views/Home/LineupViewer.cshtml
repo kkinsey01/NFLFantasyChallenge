@@ -7,7 +7,7 @@
 
     <div class="d-flex align-items-end">
         <div>
-            <span class="fw-bold ms-2 fs-5">Lineup to view</span>
+            <span class="fw-bold fs-5">Lineup to view</span>
             <select id="UserLineupViewSelect" class="form-select in-bg p-2" style="width: 200px;">
 
             </select>
@@ -16,7 +16,7 @@
         <button id="LockLineup" class="btn btn-warning ms-4 p-2">Lock Lineup</button>
     </div>    
 
-    <div id="LineupBody" class="mt-2">
+    <div id="LineupBody" class="mt-4">
 
     </div>
 </div>
@@ -48,7 +48,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5>View Player's scores for each week of playoffs:</h5>
+                <h5>Player's Scores For Each Playoff Week</h5>
             </div>
             <div class="modal-body">  
                 <div class="d-flex gap-2">
@@ -93,7 +93,7 @@
 </template>
 
 <template id="PlayerContainerTemplate">
-    <div class="d-flex flex-column ms-4 mt-2">
+    <div class="d-flex flex-column ms-2 mt-2">
     </div>
 </template>
 
@@ -101,7 +101,7 @@
     <div class="d-flex gap-2 align-items-center mb-2">
         <div class="d-flex align-items-center" style="width:250px;">
             <input class="form-control in-bg player-name" type="text" style="width: 200px;" disabled/>
-            <span class="fw-bold mx-2 player-team"></span>
+            <span class="fw-bold mx-2 player-team" style="width: 29px;"></span>
         </div>
         <div class="d-flex">
             <button class="btn btn-success add-player-btn" style="width:85px;">Add</button>

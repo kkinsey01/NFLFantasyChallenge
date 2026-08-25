@@ -85,5 +85,26 @@ namespace NFLFantasyChallenge.API.Controllers
             await _adminService.UpdateUserBalance(manageBalanceDTO);
             return Ok();
         }
+
+        [HttpGet("GetPendingRegistrations")]
+        public async Task<IActionResult> GetPendingRegistrations()
+        {
+            var result = await _adminService.GetPendingRegistrations();
+            return Ok(result);
+        }
+
+        [HttpPost("ApprovePendingRegistration")]
+        public async Task<IActionResult> ApprovePendingRegistration([FromBody] int registrationId)
+        {
+            await _adminService.ApprovePendingRegistration(registrationId);
+            return Ok();
+        }
+
+        [HttpPost("DenyPendingRegistration")]
+        public async Task<IActionResult> DenyPendingRegistration([FromBody] int registrationId)
+        {
+            await _adminService.DenyPendingRegistration(registrationId);
+            return Ok();
+        }
     }
 }

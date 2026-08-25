@@ -13,10 +13,12 @@ namespace NFLFantasyChallenge.API.Services;
 public class AdminService : IAdminService
 {
     private readonly FantasyDbContext _context;
+    private readonly IEmailService _emailService;
 
-    public AdminService(FantasyDbContext context)
+    public AdminService(FantasyDbContext context, IEmailService emailService)
     {
         _context = context;
+        _emailService = emailService;
     }
 
     public async Task<EditScoresDropdownDTO> GetEditScoresDropdownInfo()
@@ -159,7 +161,7 @@ public class AdminService : IAdminService
                 UserName = s.Username,
                 Password = "",
                 FullName = s.FullName,
-                PhoneNumber = s.PhoneNumber ?? "",
+                PhoneNumber = s.Email ?? "",
                 Balance = s.Balance,
                 RoleID = s.RoleId,
                 RoleName = s.Role.RoleName,
@@ -200,9 +202,9 @@ public class AdminService : IAdminService
             dbUser.FullName = user.FullName;
         }
 
-        if (dbUser.PhoneNumber != user.PhoneNumber)
+        if (dbUser.Email != user.PhoneNumber)
         {
-            dbUser.PhoneNumber = user.PhoneNumber;
+            dbUser.Email = user.PhoneNumber;
         }
 
         if (dbUser.Balance != user.Balance)
@@ -273,5 +275,68 @@ public class AdminService : IAdminService
 
             await _context.SaveChangesAsync();
         }        
+    }
+
+    public async Task<List<PendingRegistrationDTO>> GetPendingRegistrations()
+    {
+        var result = await _context.PendingRegistrations
+            .Select(s => new PendingRegistrationDTO()
+            {
+                PendingRegistrationId = s.PendingRegistrationId,
+                Username = s.Username,
+                FullName = s.FullName,
+                Email = s.Email ?? "",
+                CreationDate = s.RegistrationTime
+            })
+            .OrderBy(o => o.CreationDate)
+            .ToListAsync();
+
+        return result;
+    }
+    
+    public async Task ApprovePendingRegistration(int regsitrationId)
+    {
+        var pendingRegistration = await _context.PendingRegistrations
+            .FindAsync(regsitrationId);
+
+        if (pendingRegistration == null)
+        {
+            throw new FantasyAPIException("Registration not found");
+        }
+
+        var role = await _context.Roles.FirstAsync(w => w.RoleName == "Player");
+
+        var newUser = new User()
+        {
+            Username = pendingRegistration.Username,
+            Password = pendingRegistration.Password,
+            FullName = pendingRegistration.FullName,
+            Email = pendingRegistration.Email,
+            Balance = 20,
+            Role = role
+        };
+
+        _context.Users.Add(newUser);
+
+        _context.PendingRegistrations.Remove(pendingRegistration);
+
+        await _context.SaveChangesAsync();
+
+        await _emailService.SendApprovedRegistrationMessage(newUser);
+    }
+
+    public async Task DenyPendingRegistration(int registrationId)
+    {
+        var pendingRegistration = await _context.PendingRegistrations
+            .FindAsync(registrationId);
+
+        if (pendingRegistration == null)
+        {
+            throw new FantasyAPIException("Registration not found");
+        }
+
+        _context.PendingRegistrations.Remove(pendingRegistration);
+
+        await _context.SaveChangesAsync();
     }
 }

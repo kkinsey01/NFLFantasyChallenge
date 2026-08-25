@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NFLFantasyChallenge.Models;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NFLFantasyChallenge.Migrations.FantasyDbContextV2Migrations
 {
     [DbContext(typeof(FantasyDbContext))]
-    partial class FantasyDbContextV2ModelSnapshot : ModelSnapshot
+    [Migration("20260531032923_UpdateDateColumnV2")]
+    partial class UpdateDateColumnV2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,6 +97,37 @@ namespace NFLFantasyChallenge.Migrations.FantasyDbContextV2Migrations
                     b.ToTable("Slots");
                 });
 
+            modelBuilder.Entity("NFLFantasyChallenge.Models.PendingRegistration", b =>
+                {
+                    b.Property<int>("PendingRegistrationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PendingRegistrationId"));
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("RegistrationTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("PendingRegistrationId");
+
+                    b.ToTable("PendingRegistrations");
+                });
+
             modelBuilder.Entity("NFLFantasyChallenge.Models.Player", b =>
                 {
                     b.Property<int>("PlayerId")
@@ -163,15 +197,15 @@ namespace NFLFantasyChallenge.Migrations.FantasyDbContextV2Migrations
                     b.Property<double>("Balance")
                         .HasColumnType("double precision");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
                     b.Property<int>("RoleId")

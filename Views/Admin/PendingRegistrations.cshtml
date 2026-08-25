@@ -1,0 +1,80 @@
+﻿@section Scripts {
+    <script src="~/js/Admin/PendingRegistrations.js"></script>
+}
+
+<style>
+    #PendingRegistrationsTable {
+        white-space: nowrap;
+    }
+
+    .sticky-left {
+        position: sticky;
+        left: 0;
+        background-color: white !important;
+        z-index: 10;
+    }
+
+    .table-wrapper {
+        position: relative;
+    }
+
+    .scroll-indicator {
+        position: absolute;
+        right: 0;
+        top: 0%;
+        transform: translateY(-50%);
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.65);
+        color: white;
+        border-radius: 6px 0 0 6px;
+        pointer-events: none;
+        font-size: 18px;
+    }
+</style>
+
+<div>
+    <div>
+        <h5>Pending Registrations</h5>
+    </div>
+
+    <div class="table-wrapper">
+        <div class="table-responsive">
+            <table class="table mt-3" id="PendingRegistrationsTable">
+                <thead>
+                    <tr>
+                        <th class="sticky-left">Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Creation Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="PendingRegistrationTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="scroll-indicator d-md-none">
+            →
+        </div>
+    </div>       
+</div>
+
+<template id="RegistrationRowTemplate">
+    <tr>
+        <td class="pending-fullname sticky-left"></td>
+        <td class="pending-username"></td>
+        <td class="pending-email"></td>
+        <td class="pending-creationdate"></td>
+        <td>
+            <div class="d-flex gap-2">
+                <button class="btn btn-success btn-sm pending-approve-btn">✓</button>
+                <button class="btn btn-danger btn-sm pending-deny-btn">✗</button>
+            </div>
+        </td>
+    </tr>
+</template>

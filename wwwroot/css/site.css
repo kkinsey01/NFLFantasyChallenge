@@ -24,3 +24,7 @@ body {
 .in-bg {
     background-color: aliceblue;
 }
+
+.dropdown-item:hover {
+    color: black !important;
+}
