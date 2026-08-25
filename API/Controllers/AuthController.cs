@@ -53,7 +53,7 @@ namespace NFLFantasyChallenge.API.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Leaderboard", "Home");
         }
 
         [HttpPost("Logout")]

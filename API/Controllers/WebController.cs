@@ -113,7 +113,12 @@ namespace NFLFantasyChallenge.API.Controllers
         [HttpGet("GetLeaderboard")]
         public async Task<IActionResult> GetLeaderboard()
         {
-            var leaderboard = await _leaderboardService.GetLeaderboard();
+            var userIdStr = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdStr == null || !int.TryParse(userIdStr, out var userId))
+            {
+                return Problem();
+            }
+            var leaderboard = await _leaderboardService.GetLeaderboard(userId);
             return Ok(leaderboard);
         }
     }

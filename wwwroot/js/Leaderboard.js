@@ -5,11 +5,13 @@
 function getLeaderboard() {
     let urll = '/api/web/GetLeaderboard';
 
+    $('#UserStandingResult').text('');
     $.ajax({
         method: 'GET',
         url: urll,
         success: function (data) {
-            fillLeaderboard(data);
+            $('#UserStandingResult').text(data.UserStanding);
+            fillLeaderboard(data.Scores);
         },
         error: function (data) {
             showError("Error Getting Leaderboard Info", data);

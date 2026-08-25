@@ -18,7 +18,7 @@ namespace NFLFantasyChallenge.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            return View();
+            return View("Leaderboard");
         }
 
         public IActionResult Signup()
@@ -30,7 +30,7 @@ namespace NFLFantasyChallenge.Controllers
         {
             if (User.Identity?.IsAuthenticated == true)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Leaderboard");
             }
 
             return View();
@@ -52,6 +52,12 @@ namespace NFLFantasyChallenge.Controllers
 
         [Authorize]
         public IActionResult Leaderboard()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult Rules()
         {
             return View();
         }

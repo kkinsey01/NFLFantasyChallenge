@@ -2,7 +2,6 @@
 
 public class LeaderboardDTO
 {
-    public int Rank { get; set; }
-    public string UserFullName { get; set; }
-    public double TotalScore { get; set; }
+    public string UserStanding { get; set; }
+    public List<LeaderboardScoreDTO> Scores { get; set; }
 }
