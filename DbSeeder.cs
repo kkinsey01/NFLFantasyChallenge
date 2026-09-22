@@ -1,12 +1,20 @@
 ﻿using NFLFantasyChallenge.API.DTOs.JSON;
 using NFLFantasyChallenge.Models;
+using ScoreUpdater.Services;
 using System.Text.Json;
 
 namespace NFLFantasyChallenge;
 
-public static class DbSeeder
+public class DbSeeder
 {
-    public static void Seed(FantasyDbContext db)
+    private readonly ScoreService _scoreService;
+
+    public DbSeeder(ScoreService scoreService)
+    {
+        _scoreService = scoreService;
+    }
+
+    public async Task Seed(FantasyDbContext db)
     {
         if (!db.Roles.Any())
         {
@@ -19,30 +27,11 @@ public static class DbSeeder
 
             db.Roles.AddRange(roles);
             db.SaveChanges();
-        }
+        } 
 
         if (!db.Players.Any())
         {
-            var json = File.ReadAllText("2025PlayerSource.json");
-
-            var teams = JsonSerializer.Deserialize<Dictionary<string, List<JsonPlayerDTO>>>(json)!;
-
-            foreach (var team in teams.Keys)
-            {
-                var teamPlayers = teams[team];
-                foreach (var player in teamPlayers)
-                {
-                    var dbPlayer = new Player()
-                    {
-                        Name = player.Name,
-                        Position = player.Position,
-                        Team = team,
-                        Year = DateTime.Now.Year.ToString()
-                    };
-                    db.Players.Add(dbPlayer);
-                }                
-            }
-            db.SaveChanges();
+            await AddPlayers(db);
         }        
 
         if (!db.ChallengeRules.Any())
@@ -60,5 +49,48 @@ public static class DbSeeder
             db.ChallengeRules.AddRange(challengeRules);
             db.SaveChanges();
         }
+    }
+
+    private async Task AddPlayers(FantasyDbContext db)
+    {
+        var positions = new List<string>() { "QB", "RB", "WR", "TE", "PK" };
+
+        var teamAbbreviations = new List<string>() { "DEN" };
+
+        //var teamAbbreviations = new List<string>() { "DEN", "PIT", "HOU", "JAX", "BUF", "NE", "LAC",
+        //                                 "SEA", "CAR", "LAR", "PHI", "SF", "CHI", "GB" };
+
+        foreach (var teamAbv in teamAbbreviations)
+        {
+            var teamPlayers = await _scoreService.GetTeamsPlayers(teamAbv);
+            foreach (var position in positions)
+            {
+                var playersForPosition = teamPlayers
+                    .Where(w => w.Pos == position)
+                    .OrderBy(o => o.LongName)
+                    .ToList();
+
+                foreach (var player in playersForPosition)
+                {
+                    var newPlayer = new Player()
+                    {
+                        Name = player.LongName,
+                        Team = teamAbv,
+                        Position = position,
+                        Year = DateTime.Now.Year.ToString(),
+                        WildcardScore = 0,
+                        DivisionalScore = 0,
+                        ConferenceScore = 0,
+                        SuperBowlScore = 0,
+                        RapidApiPlayerId = int.TryParse(player.PlayerId, out var apiPlayerId) ? apiPlayerId : 0,
+                        RapidApiTeamId = int.TryParse(player.TeamId, out var apiTeamId) ? apiTeamId : 0
+                    };
+
+                    db.Players.Add(newPlayer);
+                }
+            }
+        }
+
+        await db.SaveChangesAsync();
     }
 }
