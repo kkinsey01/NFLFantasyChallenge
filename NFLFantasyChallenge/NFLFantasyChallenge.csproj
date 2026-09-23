@@ -27,4 +27,15 @@
     <None Include="wwwroot\img\football.jpg" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Compile Remove="ScoreUpdateService\**" />
+		<Content Remove="ScoreUpdateService\**" />
+		<EmbeddedResource Remove="ScoreUpdateService\**" />
+		<None Remove="ScoreUpdateService\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ScoreUpdater\ScoreUpdater.csproj" />
+	</ItemGroup>
+
 </Project>
