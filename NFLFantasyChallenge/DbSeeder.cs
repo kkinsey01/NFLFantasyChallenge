@@ -1,6 +1,7 @@
 ﻿using NFLFantasyChallenge.API.DTOs.JSON;
 using NFLFantasyChallenge.Models;
 using ScoreUpdater.Services;
+using System.Data.Common;
 using System.Text.Json;
 
 namespace NFLFantasyChallenge;
@@ -55,10 +56,28 @@ public class DbSeeder
     {
         var positions = new List<string>() { "QB", "RB", "WR", "TE", "PK" };
 
-        var teamAbbreviations = new List<string>() { "DEN" };
+        //var teamAbbreviations = new List<string>() { "DEN" };
 
-        //var teamAbbreviations = new List<string>() { "DEN", "PIT", "HOU", "JAX", "BUF", "NE", "LAC",
-        //                                 "SEA", "CAR", "LAR", "PHI", "SF", "CHI", "GB" };
+        var teamAbbreviations = new List<string>() { "DEN", "PIT", "HOU", "JAX", "BUF", "NE", "LAC",
+                                         "SEA", "CAR", "LAR", "PHI", "SF", "CHI", "GB" };
+
+        var teamLookups = new Dictionary<string, string>()
+        {
+            { "DEN", "Broncos" },
+            { "PIT", "Steelers" },
+            { "HOU", "Texans" },
+            { "JAX", "Jaguars" },
+            { "BUF", "Bills" },
+            { "NE", "Patriots"},
+            { "LAC", "Chargers" },
+            { "SEA", "Seahawks" },
+            { "CAR", "Panthers" },
+            { "LAR", "Rams" },
+            { "PHI", "Eagles" },
+            { "SF", "49ers" },
+            { "CHI", "Bears" },
+            { "GB", "Packers" }
+        };
 
         foreach (var teamAbv in teamAbbreviations)
         {
@@ -71,12 +90,12 @@ public class DbSeeder
                     .ToList();
 
                 foreach (var player in playersForPosition)
-                {
+                {                    
                     var newPlayer = new Player()
                     {
                         Name = player.LongName,
                         Team = teamAbv,
-                        Position = position,
+                        Position = position == "PK" ? "K" : position,
                         Year = DateTime.Now.Year.ToString(),
                         WildcardScore = 0,
                         DivisionalScore = 0,
@@ -89,6 +108,20 @@ public class DbSeeder
                     db.Players.Add(newPlayer);
                 }
             }
+            var defense = new Player()
+            {
+                Name = teamLookups[teamAbv],
+                Team = teamAbv,
+                Position = "D",
+                Year = DateTime.Now.Year.ToString(),
+                WildcardScore = 0,
+                DivisionalScore = 0,
+                ConferenceScore = 0,
+                SuperBowlScore = 0,
+                RapidApiPlayerId = 0,
+                RapidApiTeamId = int.TryParse(teamPlayers.Select(s => s.TeamId).First(), out var defenseTeamId) ? defenseTeamId : 0
+            };
+            db.Players.Add(defense);
         }
 
         await db.SaveChangesAsync();

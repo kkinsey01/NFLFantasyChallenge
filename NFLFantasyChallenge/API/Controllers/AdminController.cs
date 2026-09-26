@@ -106,5 +106,12 @@ namespace NFLFantasyChallenge.API.Controllers
             await _adminService.DenyPendingRegistration(registrationId);
             return Ok();
         }
+
+        [HttpPost("UpdateScoresForWeek")]
+        public async Task<IActionResult> UpdateScores([FromBody] string Week)
+        {
+            var updatedScore = await _adminService.UpdateScoresForWeek(Week);
+            return Ok(updatedScore);
+        }
     }
 }
