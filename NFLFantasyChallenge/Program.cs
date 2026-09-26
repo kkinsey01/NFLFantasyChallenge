@@ -5,12 +5,14 @@ using NFLFantasyChallenge.API.Services.Interfaces;
 using NFLFantasyChallenge.Middleware;
 using NFLFantasyChallenge.Models;
 using Resend;
+using ScoreUpdater;
+using ScoreUpdater.Services;
 
 namespace NFLFantasyChallenge
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,9 @@ namespace NFLFantasyChallenge
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<ILineupControlService, LineupControlService>();
             builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+
+            builder.Services.AddScoped<ScoreService>();
+            builder.Services.AddScoped<DbSeeder>();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -49,6 +54,11 @@ namespace NFLFantasyChallenge
             builder.Services.AddDbContext<FantasyDbContext>(options =>
                 options.UseNpgsql(
                     builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddHttpClient<ExternalApiClient>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["ApiKeys:RapidApiUrl"] ?? "");
+            });
 
             builder.Services.AddOptions();
             builder.Services.AddHttpClient<ResendClient>();
@@ -86,7 +96,8 @@ namespace NFLFantasyChallenge
                 catch
                 {
                 }
-                DbSeeder.Seed(db);               
+                var dbSeeder = scope.ServiceProvider.GetRequiredService<DbSeeder>();
+                await dbSeeder.Seed(db);               
             }            
 
             app.UseHttpsRedirection();

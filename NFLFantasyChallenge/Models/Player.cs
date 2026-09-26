@@ -15,4 +15,6 @@ public class Player
     public double? DivisionalScore { get; set; }
     public double? ConferenceScore { get; set; }
     public double? SuperBowlScore { get; set; }
+    public int RapidApiPlayerId { get; set; }
+    public int RapidApiTeamId { get; set; }
 }

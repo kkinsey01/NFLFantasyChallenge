@@ -1,0 +1,21 @@
+﻿@section Scripts {
+    <script src="~/js/Admin/AdminFunctions.js"></script>
+}
+
+<div class="mx-auto w-100">
+    <h5 class="ms-2 mt-2">Admin Functions</h5>
+    <div class="d-flex mt-4">        
+        <div>
+            <label class="fw-bold">Update scores for a given week: </label>
+            <select id="WeekSelect" class="form-select in-bg">
+                <option value="1">Wildcard</option>
+                <option value="2">Divisional</option>
+                <option value="3">Conference</option>
+                <option value="4">Super Bowl</option>
+            </select>
+        </div>
+        <button id="UpdateScoresForWeek" class="btn btn-success mt-auto ms-2">
+            GO
+        </button>
+    </div>
+</div>

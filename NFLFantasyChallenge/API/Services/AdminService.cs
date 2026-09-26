@@ -7,6 +7,7 @@ using NFLFantasyChallenge.API.Enums;
 using NFLFantasyChallenge.API.Services.Interfaces;
 using NFLFantasyChallenge.Middleware;
 using NFLFantasyChallenge.Models;
+using ScoreUpdater.Services;
 
 namespace NFLFantasyChallenge.API.Services;
 
@@ -14,11 +15,13 @@ public class AdminService : IAdminService
 {
     private readonly FantasyDbContext _context;
     private readonly IEmailService _emailService;
+    private readonly ScoreService _scoreService;
 
-    public AdminService(FantasyDbContext context, IEmailService emailService)
+    public AdminService(FantasyDbContext context, IEmailService emailService, ScoreService scoreService)
     {
         _context = context;
         _emailService = emailService;
+        _scoreService = scoreService;
     }
 
     public async Task<EditScoresDropdownDTO> GetEditScoresDropdownInfo()
@@ -338,5 +341,62 @@ public class AdminService : IAdminService
         _context.PendingRegistrations.Remove(pendingRegistration);
 
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<string> UpdateScoresForWeek(string week)
+    {
+        // go through a specific week 
+        // have to get the gameID, and use each player's playerID to get their fantasy scores. 
+        // Unfortunately it looks like it's a seperate API call for each individual player
+       
+        // start with getting all the games for a week
+        var weeksGames = await _scoreService.GetWeeksGames(week);
+
+        // list of all players in a lineup
+        var playersInALineup = await _context.Slots
+            .Where(w => w.Player != null)
+            .Select(s => s.Player)
+            .Distinct()
+            .ToListAsync();
+
+        foreach (var game in weeksGames)
+        {
+            var playersToUpdate = playersInALineup
+                .Where(w => w.RapidApiTeamId.ToString() == game.TeamIDAway || w.RapidApiTeamId.ToString() == game.TeamIDHome)
+                .ToList();
+
+            foreach (var player in playersToUpdate)
+            {
+                double scoreForWeek = 0;
+                if (player.Position == "D")
+                {
+                    scoreForWeek = await _scoreService.GetScoresForTeamForWeek(game.GameId, player.RapidApiTeamId.ToString());
+                } 
+                else
+                {                   
+                    scoreForWeek = await _scoreService.GetScoresForPlayerForWeek(game.GameId, player.RapidApiPlayerId.ToString());
+                }                    
+
+                switch (week)
+                {
+                    case "1":
+                        player.WildcardScore = scoreForWeek;
+                        break;
+                    case "2":
+                        player.DivisionalScore = scoreForWeek;
+                        break;
+                    case "3":
+                        player.ConferenceScore = scoreForWeek;
+                        break;
+                    case "4":
+                        player.SuperBowlScore = scoreForWeek;
+                        break;
+                }               
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        return "";
     }
 }

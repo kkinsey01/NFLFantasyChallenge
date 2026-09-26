@@ -20,4 +20,5 @@ public interface IAdminService
     public Task<List<PendingRegistrationDTO>> GetPendingRegistrations();
     public Task ApprovePendingRegistration(int registrationId);
     public Task DenyPendingRegistration(int registrationId);
+    public Task<string> UpdateScoresForWeek(string Week);
 }

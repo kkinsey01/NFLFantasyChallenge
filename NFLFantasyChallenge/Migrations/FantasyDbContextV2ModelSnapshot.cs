@@ -147,6 +147,12 @@ namespace NFLFantasyChallenge.Migrations.FantasyDbContextV2Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("RapidApiPlayerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RapidApiTeamId")
+                        .HasColumnType("integer");
+
                     b.Property<double?>("SuperBowlScore")
                         .HasColumnType("double precision");
 
