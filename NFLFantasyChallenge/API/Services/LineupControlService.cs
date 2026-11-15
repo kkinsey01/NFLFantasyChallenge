@@ -35,7 +35,7 @@ public class LineupControlService : ILineupControlService
         }
 
         var usersWithLineups = await _context.Lineups
-            .Where(w => w.IsLocked)
+            .Where(w => w.LineupStatus.StatusName == "Finalized")
             .Select(s => new UserLineupInfoDTO()
             {
                 UserId = s.User.UserId,
@@ -74,7 +74,7 @@ public class LineupControlService : ILineupControlService
             .Select(s => new
             {
                 s.User.FullName,
-                s.IsLocked,
+                s.LineupStatus.StatusName,
                 Slots = s.Slots
                     .Where(p => p.Player != null)
                     .Select(p => new LineupSlotDTO
@@ -92,7 +92,7 @@ public class LineupControlService : ILineupControlService
         var lineupDTO = new UserLineupDTO()
         {
             FullName = user.FullName,
-            IsLocked = false,
+            Status = "Creation",
             CanEdit = filteredUserId == requestedByUserId,
             PositionGroups = new List<LineupPlayersByPosition>()
         };
@@ -109,7 +109,7 @@ public class LineupControlService : ILineupControlService
         }
         else
         {
-            lineupDTO.IsLocked = lineup.IsLocked;
+            lineupDTO.Status = lineup.StatusName;
             lineupDTO.PositionGroups = lineup.Slots
                 .GroupBy(p => p.Position)
                 .Select(g => new LineupPlayersByPosition
@@ -251,6 +251,10 @@ public class LineupControlService : ILineupControlService
 
         if (userLineup == null)
         {
+            var lineupStatus = await _context.LineupStatuses
+                .Where(w => w.StatusName == "Creation")
+                .FirstOrDefaultAsync();
+
             var lineUp = new Lineup()
             {
                 UserId = userId,
@@ -262,7 +266,8 @@ public class LineupControlService : ILineupControlService
                         SlotIndex = 1,
                         PlayerId = dbPlayer.PlayerId
                     }
-                }
+                },
+                LineupStatusId = lineupStatus!.LineupStatusId
             };
 
             _context.Lineups.Add(lineUp);
@@ -329,7 +334,7 @@ public class LineupControlService : ILineupControlService
         await _context.SaveChangesAsync();
     }
 
-    public async Task LockLineup(int userId)
+    public async Task SendForApproval(int userId)
     {
         var userLineup = await _context.Lineups
             .Include(i => i.User)
@@ -345,7 +350,16 @@ public class LineupControlService : ILineupControlService
 
         await ValidateLineup(userLineup);
 
-        userLineup.IsLocked = true;
+        var newStatus = await _context.LineupStatuses
+            .Where(w => w.StatusName == "Approval")
+            .FirstOrDefaultAsync();
+        
+        if (newStatus == null)
+        {
+            throw new FantasyAPIException("New status not found");
+        }
+
+        userLineup.LineupStatusId = newStatus.LineupStatusId;
         await _context.SaveChangesAsync();
     }
 

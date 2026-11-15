@@ -19,10 +19,10 @@
         updateSearch();
     })
 
-    $('#LockLineup').on('click', function (e) {
+    $('#SendForApproval').on('click', function (e) {
         e.preventDefault();
         
-        lockLineup();
+        sendForApproval();
     });
 
     $('#CloseViewModalBtn').on('click', function (e) {
@@ -79,15 +79,27 @@ function getUserLineup() {
 
     var urll = '/api/web/GetUserLineup' + formatUrlParams(searchFilters);    
 
+    $('#CurrentStatusDisplay').hide();
     $.ajax({
         method: 'GET',
         url: urll,
         success: function (data) {
             $('#UserFullName').text(data.FullName);
             positionGroups = data.PositionGroups;
-            isLineupLocked = data.IsLocked;
+            isLineupLocked = data.Status != "Creation";
             canEditLineup = data.CanEdit;
             fillLineup();
+
+            if (isLineupLocked && canEditLineup) {
+                $('#SendForApproval').hide();
+
+                if (data.Status != "Creation" && data.Status != "Finalized") {                    
+                    $('#CurrentStatus').text(data.Status);
+                    $('#CurrentStatusDisplay').show();
+                }                
+            } else {                
+                $('#SendForApproval').show();                
+            }
         },
         error: function (data) {
             showError("Error getting lineup", data);
@@ -251,7 +263,7 @@ function updateSearch() {
         filteredPlayers = filteredPlayers.filter(f => f.Team == teamSelect);
     }
 
-    fillTeamSearchDropdown(filteredPlayers);
+    //fillTeamSearchDropdown(filteredPlayers);
     fillAddPlayerList(filteredPlayers);
 }
 
@@ -292,22 +304,22 @@ function removePlayerFromLineup(playerId) {
     })
 }
 
-function lockLineup() {
-    if (!confirm("Are you sure you want to lock your lineup? This action cannot be undone.")) {
+function sendForApproval() {
+    if (!confirm("Are you sure you want to lock in your lineup? This action cannot be undone.")) {
         return;
     }
 
-    let urll = '/api/web/LockLineup';
+    let urll = '/api/web/SendForApproval';
 
     $.ajax({
         method: 'POST',
         url: urll,
         success: function (data) {
-            toastr.success("Lineup Locked");
+            toastr.success("Lineup Sent For Approval");
             getUserLineup();
         },
         error: function (data) {
-            showError("Error Locking Lineup", data);
+            showError("Error Sending Lineup For Approval", data);
         }
     })
 }      

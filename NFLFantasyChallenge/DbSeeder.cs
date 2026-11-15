@@ -50,6 +50,20 @@ public class DbSeeder
             db.ChallengeRules.AddRange(challengeRules);
             db.SaveChanges();
         }
+
+        if (!db.LineupStatuses.Any())
+        {
+            var lineupStatuses = new List<LineupStatus>()
+            {
+                new LineupStatus() { StatusName = "Creation" },
+                new LineupStatus() { StatusName = "Approval" },
+                new LineupStatus() { StatusName = "Payment" },
+                new LineupStatus() { StatusName = "Finalized" }
+            };
+
+            db.LineupStatuses.AddRange(lineupStatuses);
+            db.SaveChanges();
+        }
     }
 
     private async Task AddPlayers(FantasyDbContext db)

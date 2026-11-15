@@ -3,6 +3,7 @@ using NFLFantasyChallenge.API.DTOs.Admin;
 using NFLFantasyChallenge.API.DTOs.Admin.EditScores;
 using NFLFantasyChallenge.API.DTOs.Admin.ManageUsers;
 using NFLFantasyChallenge.API.Services.Interfaces;
+using System.Runtime.InteropServices;
 
 namespace NFLFantasyChallenge.API.Controllers
 {
@@ -71,7 +72,7 @@ namespace NFLFantasyChallenge.API.Controllers
             return Ok();
         }
 
-        [HttpGet("GetUserBalances")]
+        [HttpGet("GetUserManageInfo")]
         public async Task<IActionResult> GetUserBalances()
         {
             var result = await _adminService.GetUserBalances();
@@ -80,7 +81,7 @@ namespace NFLFantasyChallenge.API.Controllers
         }
 
         [HttpPost("UpdateUserBalance")]
-        public async Task<IActionResult> UpdateUserBalance(ManageBalanceDTO manageBalanceDTO)
+        public async Task<IActionResult> UpdateUserBalance(ManageUserDTO manageBalanceDTO)
         {
             await _adminService.UpdateUserBalance(manageBalanceDTO);
             return Ok();
@@ -112,6 +113,20 @@ namespace NFLFantasyChallenge.API.Controllers
         {
             var updatedScore = await _adminService.UpdateScoresForWeek(Week);
             return Ok(updatedScore);
+        }
+
+        [HttpPost("ApproveLineup")]
+        public async Task<IActionResult> ApproveLineup([FromBody] int userId)
+        {
+            await _adminService.ApproveLineup(userId);
+            return Ok();
+        }
+
+        [HttpPost("DenyLineup")]
+        public async Task<IActionResult> DenyLineup([FromBody] int userId)
+        {
+            await _adminService.DenyLineup(userId);
+            return Ok();
         }
     }
 }

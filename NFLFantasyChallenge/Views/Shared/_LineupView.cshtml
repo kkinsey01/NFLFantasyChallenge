@@ -1,0 +1,57 @@
+﻿@model NFLFantasyChallenge.PageModels.LineupViewModel
+
+@{
+    var positionOrder = new List<string> { "QB", "RB", "WR", "TE", "D", "K" };
+}
+
+@if (Model.IsApproval)
+{
+    <div class="mb-3">
+        <div class="fw-bold">
+            Total Player Count: @Model.Players.Count()
+        </div>
+        <div class="mt-2 fw-bold">
+            Distinct Teams: @Model.Players.Select(s => s.Team).Distinct().Count()
+        </div>
+    </div>
+} 
+
+<div>
+    @foreach (var posGroup in Model.Players.OrderBy(o => positionOrder.IndexOf(o.Position)).GroupBy(g => g.Position).ToList())
+    {
+        <div class="mb-3">
+            <h5>
+                @{ 
+                    var pos = posGroup.Select(s => s.Position).First();
+                    if (pos == "D")
+                    {
+                        pos = "DEF";
+                    }
+                }
+                
+                @pos 
+                <span class="badge bg-secondary"> @posGroup.Count()</span>
+            </h5>
+            <hr />
+            <div class="mt-2">
+                @foreach (var player in posGroup)
+                {
+                    <div class="d-flex">
+                        <div class="">
+                            @player.PlayerName
+                        </div>
+                        <div class="ms-2 fw-bold">
+                            @player.Team
+                        </div>
+                        @if (!Model.IsApproval)
+                        {
+                            <div class="ms-2 fw-bold">                                
+                                Total Score: @player.TotalScore
+                            </div>
+                        }
+                    </div>
+                } 
+            </div>
+        </div>
+    }
+</div> 
