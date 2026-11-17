@@ -11,9 +11,9 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY ["NFLFantasyChallenge.csproj", "./"]
-COPY ["ScoreUpdater.csproj", "./"]
-RUN dotnet restore "./NFLFantasyChallenge.csproj"
+COPY ["NFLFantasyChallenge/NFLFantasyChallenge.csproj", "./"]
+COPY ["ScoreUpdater/ScoreUpdater.csproj", "./"]
+RUN dotnet restore "NFLFantasyChallenge/NFLFantasyChallenge.csproj"
 
 COPY . .
 RUN dotnet publish "./NFLFantasyChallenge.csproj" -c Release -o /app/publish /p:UseAppHost=false
