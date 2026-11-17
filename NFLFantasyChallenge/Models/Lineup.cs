@@ -15,5 +15,8 @@ public class Lineup
     [InverseProperty(nameof(LineupSlot.Lineup))]
     public List<LineupSlot> Slots { get; set; }
 
-    public bool IsLocked { get; set; }
+    [ForeignKey(nameof(LineupStatus))]
+    public int LineupStatusId { get; set; }
+
+    public LineupStatus LineupStatus { get; set; } = null!;
 }

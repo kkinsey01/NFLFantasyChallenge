@@ -3,6 +3,7 @@ using NFLFantasyChallenge.API.DTOs.Admin;
 using NFLFantasyChallenge.API.DTOs.Admin.EditScores;
 using NFLFantasyChallenge.API.DTOs.Admin.ManageUsers;
 using NFLFantasyChallenge.API.DTOs.Auth;
+using NFLFantasyChallenge.API.DTOs.Lineup;
 using NFLFantasyChallenge.API.Enums;
 using NFLFantasyChallenge.API.Services.Interfaces;
 using NFLFantasyChallenge.Middleware;
@@ -247,34 +248,80 @@ public class AdminService : IAdminService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<ManageBalanceDTO>> GetUserBalances()
+    public async Task<List<ManageUserDTO>> GetUserBalances()
     {
-        var result = await _context.Users
-            .Select(s => new ManageBalanceDTO()
+        var userResults = await _context.Users
+            .Select(s => new ManageUserDTO()
             {
                 UserId = s.UserId,
                 Name = s.FullName,
-                Amount = s.Balance,
+                Balance = s.Balance,
+                LineupStatus = ""
             })
-            .OrderByDescending(o => o.Amount)
+            .OrderByDescending(o => o.Balance)
             .ThenBy(t => t.Name)
             .ToListAsync();
 
-        return result;
+        var lineupStatuses = await _context.Lineups
+            .Select(s => new
+            {
+                s.LineupId,
+                s.UserId,
+                s.LineupStatus.StatusName
+            })
+            .ToListAsync();
+
+        foreach (var user in userResults)
+        {
+            user.LineupStatus = lineupStatuses
+                .Where(w => w.UserId == user.UserId)
+                .Select(s => s.StatusName)
+                .FirstOrDefault() ?? "Creating";
+        }
+
+        return userResults;
     }
 
-    public async Task UpdateUserBalance(ManageBalanceDTO manageBalanceDTO)
+    public async Task UpdateUserBalance(ManageUserDTO manageBalanceDTO)
     {
-        var user = await _context.Users.Where(w => w.UserId == manageBalanceDTO.UserId).FirstOrDefaultAsync();
+        var user = await _context.Users           
+            .Where(w => w.UserId == manageBalanceDTO.UserId).FirstOrDefaultAsync();
 
         if (user == null)
         {
             throw new FantasyAPIException("Invalid User");
         }
 
-        if (user.Balance != manageBalanceDTO.Amount)
+        var userLineup = await _context.Lineups
+            .Include(i => i.LineupStatus)
+            .Where(w => w.UserId == manageBalanceDTO.UserId)
+            .FirstOrDefaultAsync();
+
+        if (user.Balance != manageBalanceDTO.Balance)
         {
-            user.Balance = manageBalanceDTO.Amount;
+            user.Balance = manageBalanceDTO.Balance;
+
+            if (userLineup != null && userLineup.LineupStatus.StatusName != "Creation" && userLineup.LineupStatus.StatusName != "Approval")
+            {
+                LineupStatus? newStatus = null;
+                if (user.Balance > 0)
+                {
+                    newStatus = await _context.LineupStatuses
+                        .Where(w => w.StatusName == "Payment")
+                        .FirstOrDefaultAsync();
+                }
+                else
+                {
+                    newStatus = await _context.LineupStatuses
+                        .Where(w => w.StatusName == "Finalized")
+                        .FirstOrDefaultAsync();
+                }
+
+                if (newStatus != null)
+                {
+                    userLineup.LineupStatus = newStatus;
+                }                
+            }
 
             await _context.SaveChangesAsync();
         }        
@@ -398,5 +445,112 @@ public class AdminService : IAdminService
         await _context.SaveChangesAsync();
 
         return "";
+    }
+
+    public async Task<List<LineupViewDTO>> GetLineupForApproval(int userId)
+    {
+        var userLineup = await _context.Lineups
+            .Include(i => i.LineupStatus)
+            .Include(i => i.Slots)
+            .ThenInclude(t => t.Player)
+            .Where(w => w.UserId == userId)
+            .FirstOrDefaultAsync();
+
+        if (userLineup == null)
+        {
+            throw new FantasyAPIException("Lineup not found");
+        }
+
+        if (userLineup.LineupStatus.StatusName != "Approval")
+        {
+            throw new FantasyAPIException("Lineup is not up for approval");
+        }
+
+        var players = userLineup.Slots
+            .Select(s => new LineupViewDTO()
+            {
+                PlayerId = s.PlayerId ?? 0,
+                SlotIndex = s.SlotIndex,
+                PlayerName = s.Player.Name,
+                Position = s.Player.Position,
+                Team = s.Player.Team,
+                TotalScore = (s.Player.WildcardScore + s.Player.DivisionalScore + s.Player.ConferenceScore + s.Player.SuperBowlScore) ?? 0
+            })
+            .ToList();
+
+        return players;
+    }
+
+    public async Task ApproveLineup(int userId)
+    {
+        var userLineup = await _context.Lineups
+            .Include(i => i.User)
+            .Include(i => i.LineupStatus)
+            .Where(w => w.UserId == userId)
+            .FirstOrDefaultAsync();
+
+        if (userLineup == null)
+        {
+            throw new FantasyAPIException("Lineup not found");
+        }
+
+        if (userLineup.LineupStatus.StatusName != "Approval")
+        {
+            throw new FantasyAPIException("Lineup is not up for approval");
+        }
+
+        LineupStatus? newStatus = null;
+        if (userLineup.User.Balance > 0)
+        {
+            newStatus = await _context.LineupStatuses
+                .Where(w => w.StatusName == "Payment")
+                .FirstOrDefaultAsync();
+        }
+        else
+        {
+            newStatus = await _context.LineupStatuses
+                .Where(w => w.StatusName == "Finalized")
+                .FirstOrDefaultAsync();
+        }
+
+        if (newStatus == null)
+        {
+            throw new FantasyAPIException("Invalid status");
+        }
+
+        userLineup.LineupStatus = newStatus;
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DenyLineup(int userId)
+    {
+        var userLineup = await _context.Lineups
+            .Include(i => i.LineupStatus)
+            .Where(w => w.UserId == userId)
+            .FirstOrDefaultAsync();
+
+        if (userLineup == null)
+        {
+            throw new FantasyAPIException("Lineup not found");
+        }
+
+        if (userLineup.LineupStatus.StatusName != "Approval")
+        {
+            throw new FantasyAPIException("Lineup is not up for approval");
+        }
+
+        var newStatus = await _context.LineupStatuses
+            .Where(w => w.StatusName == "Creation")
+            .FirstOrDefaultAsync();
+
+        if (newStatus == null)
+        {
+            throw new FantasyAPIException("Invalid status");
+        }
+
+        userLineup.LineupStatus = newStatus;
+
+        await _context.SaveChangesAsync();
     }
 }

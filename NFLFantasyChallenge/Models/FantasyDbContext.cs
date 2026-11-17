@@ -14,6 +14,7 @@ public class FantasyDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Player> Players => Set<Player>();
     public DbSet<Lineup> Lineups => Set<Lineup>();
+    public DbSet<LineupStatus> LineupStatuses => Set<LineupStatus>();
     public DbSet<LineupSlot> Slots => Set<LineupSlot>();
     public DbSet<PendingRegistration> PendingRegistrations => Set<PendingRegistration>();
 }

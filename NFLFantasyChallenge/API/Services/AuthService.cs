@@ -25,8 +25,9 @@ public class AuthService : IAuthService
             throw new FantasyAPIException("Username already taken");
         }
 
-        if (await _context.Users.AnyAsync(a => a.Email == signupDTO.Email)
-            || await _context.PendingRegistrations.AnyAsync(a => a.Email == signupDTO.Email))
+        if (!string.IsNullOrWhiteSpace(signupDTO.Email) &&
+            (await _context.Users.AnyAsync(a => a.Email == signupDTO.Email)
+            || await _context.PendingRegistrations.AnyAsync(a => a.Email == signupDTO.Email)))
         {
             throw new FantasyAPIException("Email already taken");
         }

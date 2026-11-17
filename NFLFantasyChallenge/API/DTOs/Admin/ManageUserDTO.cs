@@ -1,8 +1,9 @@
 ﻿namespace NFLFantasyChallenge.API.DTOs.Admin;
 
-public class ManageBalanceDTO
+public class ManageUserDTO
 {
     public int UserId { get; set; }
     public string Name { get; set; }
-    public double Amount { get; set; }
+    public double Balance { get; set; }
+    public string? LineupStatus { get; set; }
 }

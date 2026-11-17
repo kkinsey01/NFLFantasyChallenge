@@ -51,13 +51,15 @@ namespace NFLFantasyChallenge.Migrations.FantasyDbContextV2Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LineupId"));
 
-                    b.Property<bool>("IsLocked")
-                        .HasColumnType("boolean");
+                    b.Property<int>("LineupStatusId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("LineupId");
+
+                    b.HasIndex("LineupStatusId");
 
                     b.HasIndex("UserId");
 
@@ -92,6 +94,23 @@ namespace NFLFantasyChallenge.Migrations.FantasyDbContextV2Migrations
                     b.HasIndex("PlayerId");
 
                     b.ToTable("Slots");
+                });
+
+            modelBuilder.Entity("NFLFantasyChallenge.Models.LineupStatus", b =>
+                {
+                    b.Property<int>("LineupStatusId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LineupStatusId"));
+
+                    b.Property<string>("StatusName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("LineupStatusId");
+
+                    b.ToTable("LineupStatuses");
                 });
 
             modelBuilder.Entity("NFLFantasyChallenge.Models.PendingRegistration", b =>
@@ -227,11 +246,19 @@ namespace NFLFantasyChallenge.Migrations.FantasyDbContextV2Migrations
 
             modelBuilder.Entity("NFLFantasyChallenge.Models.Lineup", b =>
                 {
+                    b.HasOne("NFLFantasyChallenge.Models.LineupStatus", "LineupStatus")
+                        .WithMany()
+                        .HasForeignKey("LineupStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("NFLFantasyChallenge.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("LineupStatus");
 
                     b.Navigation("User");
                 });

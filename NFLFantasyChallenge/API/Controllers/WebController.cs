@@ -89,7 +89,7 @@ namespace NFLFantasyChallenge.API.Controllers
         }
 
         [Authorize]
-        [HttpPost("LockLineup")]
+        [HttpPost("SendForApproval")]
         public async Task<IActionResult> LockLineup()
         {
             var userIdStr = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -97,7 +97,7 @@ namespace NFLFantasyChallenge.API.Controllers
             {
                 return Problem();
             }
-            await _lineupControlService.LockLineup(userId);
+            await _lineupControlService.SendForApproval(userId);
             return Ok();
         }
 

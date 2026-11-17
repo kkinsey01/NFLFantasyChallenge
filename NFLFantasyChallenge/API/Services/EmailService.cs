@@ -23,7 +23,7 @@ public class EmailService : IEmailService
 
     public async Task SendNewRegistrationEmail(string username, DateTime requestedTime)
     {
-        var adminEmails = new[] { "kylerkinsey01@gmail.com", "michaeljpage44@gmail.com" };
+        var adminEmails = new[] { "kylerkinsey01@gmail.com" };
 
         var message =
                 "There is a new user registration for the fantasy challenge website!" +
@@ -56,7 +56,7 @@ public class EmailService : IEmailService
             $"Welcome to the NFL Fantasy Football Playoff Challenge Website!",
             $"You can now login with your username and password. Be sure to set your lineup before wild card weekend.",
             $"Scores will be updated weekly and you can keep updated on your standing within the league on the leaderboard tab.",
-            $"Best of on your playoff run!"
+            $"Best of luck on your playoff run!"
         };
 
         var message = string.Join(Environment.NewLine, lines);

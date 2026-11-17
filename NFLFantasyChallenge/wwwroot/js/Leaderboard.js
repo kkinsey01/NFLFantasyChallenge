@@ -32,6 +32,10 @@ function fillLeaderboard(rankings) {
         newRow.find('.user-full-name').text(rank.UserFullName);
         newRow.find('.total-score').text(rank.TotalScore);
 
+        newRow.find('.view-lineup-btn').on('click', function (e) {
+            viewLineup(rank.UserId, rank.UserFullName);
+        });
+
         if (index == 0) {
             newRow.addClass('gold-background');
         } else if (index == 1) {
@@ -42,4 +46,21 @@ function fillLeaderboard(rankings) {
 
         tableBody.append(newRow);
     })    
+}
+
+function viewLineup(userId, fullName) {
+    let urll = '/Home/ViewLineup?UserId=' + userId;
+
+    $.ajax({
+        method: 'GET',
+        url: urll,
+        success: function (data) {
+            $('#UserFullName').text(fullName);
+            $('#ViewLineupModalBody').html(data);
+            $('#ViewLineupModal').modal('show');
+        },
+        error: function (data) {
+            showError("Error getting lineup", data);
+        }
+    })
 }
