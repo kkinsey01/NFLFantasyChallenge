@@ -12,6 +12,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 COPY ["NFLFantasyChallenge.csproj", "./"]
+COPY ["ScoreUpdater.csproj", "./"]
 RUN dotnet restore "./NFLFantasyChallenge.csproj"
 
 COPY . .
