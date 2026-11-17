@@ -43,14 +43,14 @@
                         <div class="ms-2 fw-bold">
                             @player.Team
                         </div>
-                        @if (!Model.IsApproval)
-                        {
-                            <div class="ms-2 fw-bold">                                
-                                Total Score: @player.TotalScore
-                            </div>
-                        }
                     </div>
-                } 
+                    @if (!Model.IsApproval)
+                    {
+                        <div class="ms-2 mt-1 mb-1">
+                            Total Points: <span class="fw-bold">@player.TotalScore.ToString("F2")</span>
+                        </div>
+                    }
+                }
             </div>
         </div>
     }

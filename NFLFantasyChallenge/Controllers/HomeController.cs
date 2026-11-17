@@ -3,16 +3,20 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NFLFantasyChallenge.API.Services.Interfaces;
+using NFLFantasyChallenge.Models;
+using NFLFantasyChallenge.PageModels;
 
 namespace NFLFantasyChallenge.Controllers
 {
     public class HomeController : Controller
     {
         private readonly IAuthService _authApi;
+        private readonly ILeaderboardService _leaderBoardService;
 
-        public HomeController(IAuthService authApi)
+        public HomeController(IAuthService authApi, ILeaderboardService leaderboardService)
         {
             _authApi = authApi;
+            _leaderBoardService = leaderboardService;
         }
 
         [Authorize]
@@ -54,6 +58,30 @@ namespace NFLFantasyChallenge.Controllers
         public IActionResult Leaderboard()
         {
             return View();
+        }
+
+        [Authorize]
+        public async Task<IActionResult> ViewLineup(int userId)
+        {
+            var lineup = await _leaderBoardService.ViewLineup(userId);
+
+            var players = lineup
+                .Select(s => new LineupPlayers()
+                {
+                    PlayerName = s.PlayerName,
+                    Position = s.Position,
+                    Team = s.Team,  
+                    TotalScore = s.TotalScore
+                })
+                .ToList();
+
+            var model = new LineupViewModel()
+            {
+                Players = players,
+                IsApproval = false
+            };
+
+            return PartialView("~/Views/Shared/_LineupView.cshtml", model);
         }
 
         [Authorize]

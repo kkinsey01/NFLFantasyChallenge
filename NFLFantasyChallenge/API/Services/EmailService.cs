@@ -23,7 +23,7 @@ public class EmailService : IEmailService
 
     public async Task SendNewRegistrationEmail(string username, DateTime requestedTime)
     {
-        var adminEmails = new[] { "kylerkinsey01@gmail.com", "michaeljpage44@gmail.com" };
+        var adminEmails = new[] { "kylerkinsey01@gmail.com" };
 
         var message =
                 "There is a new user registration for the fantasy challenge website!" +

@@ -245,7 +245,7 @@ function fillAddPlayerList(players) {
         })
         body.append(newRow);
     });
-
+    
     $('#AddPlayerModal').modal('show');
 }
 

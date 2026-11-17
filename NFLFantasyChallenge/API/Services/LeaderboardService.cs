@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NFLFantasyChallenge.API.DTOs;
+using NFLFantasyChallenge.API.DTOs.Lineup;
 using NFLFantasyChallenge.API.Services.Interfaces;
+using NFLFantasyChallenge.Middleware;
 using NFLFantasyChallenge.Models;
 
 namespace NFLFantasyChallenge.API.Services;
@@ -22,6 +24,7 @@ public class LeaderboardService : ILeaderboardService
             .Include(i => i.User)
             .Include(i => i.Slots)
             .ThenInclude(t => t.Player)
+            .Where(w => w.LineupStatus.StatusName == "Finalized")
             .ToListAsync();        
 
         var scores = new List<LeaderboardScoreDTO>();
@@ -77,5 +80,34 @@ public class LeaderboardService : ILeaderboardService
             3 => $"{index}rd",
             _ => $"{index}th"
         };
+    }
+
+    public async Task<List<LineupViewDTO>> ViewLineup(int userId)
+    {
+        var userLineup = await _context.Lineups
+            .Include(i => i.LineupStatus)
+            .Include(i => i.Slots)
+            .ThenInclude(t => t.Player)
+            .Where(w => w.UserId == userId)
+            .FirstOrDefaultAsync();
+
+        if (userLineup == null)
+        {
+            throw new FantasyAPIException("Lineup not found");
+        }
+
+        var players = userLineup.Slots
+            .Select(s => new LineupViewDTO()
+            {
+                PlayerId = s.PlayerId ?? 0,
+                SlotIndex = s.SlotIndex,
+                PlayerName = s.Player.Name,
+                Position = s.Player.Position,
+                Team = s.Player.Team,
+                TotalScore = (s.Player.WildcardScore + s.Player.DivisionalScore + s.Player.ConferenceScore + s.Player.SuperBowlScore) ?? 0
+            })
+            .ToList();
+
+        return players;
     }
 }
