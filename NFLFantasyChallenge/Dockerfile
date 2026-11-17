@@ -16,9 +16,11 @@ COPY ["ScoreUpdater/ScoreUpdater.csproj", "ScoreUpdater/"]
 RUN dotnet restore "NFLFantasyChallenge/NFLFantasyChallenge.csproj"
 
 COPY . .
+
+WORKDIR /src/NFLFantasyChallenge
 RUN dotnet publish "NFLFantasyChallenge.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "NFLFantasyChallenge.dll"]
